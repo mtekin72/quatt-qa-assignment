@@ -24,16 +24,21 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # Debug step to check environment variables
-      - name: Debug environment
-        run: printenv | grep CYPRESS
+      - name: Debug environment variables
+        run: |
+          printenv | grep CYPRESS
+          echo "Testing API Token: $CYPRESS_API_TOKEN"
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           CYPRESS_API_TOKEN: ${{ secrets.CYPRESS_API_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Debugging API token
-      - name: Test API token validity
-        run: |
-          echo "Testing API Token"
-          curl -X GET "https://api
+      - name: Run Cypress tests
+        uses: cypress-io/github-action@v6
+        with:
+          record: true
+        env:
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          CYPRESS_API_TOKEN: ${{ secrets.CYPRESS_API_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
