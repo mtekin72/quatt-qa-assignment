@@ -1,6 +1,11 @@
 describe('CRUD Operations for User API', () => {
     const token = Cypress.env('CYPRESS_API_TOKEN');
     let userId;
+    console.log('API Token:', token);
+  
+    if (!token) {
+      throw new Error('CYPRESS_API_TOKEN is not defined. Please check your environment secrets.');
+    }
   
     it('Create a user', () => {
       const email = `john.doe.${Date.now()}@test.com`;
