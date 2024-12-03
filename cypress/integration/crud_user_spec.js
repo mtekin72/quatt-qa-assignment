@@ -8,6 +8,7 @@ describe('CRUD Operations for User API', () => {
     }
   
     it('Create a user', () => {
+        console.log("CYPRESS_API_TOKEN:", Cypress.env('CYPRESS_API_TOKEN'));
       const email = `john.doe.${Date.now()}@test.com`;
       cy.apiRequest('POST', '/users', {
         name: 'John Doe',
