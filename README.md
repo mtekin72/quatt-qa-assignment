@@ -29,5 +29,5 @@ This project contains end-to-end tests for CRUD operations on the GoRest User AP
   ```
 - To run the tests in the Cypress GUI:
   ```bash
-  npx cypress open
+  npx cypress open //
   ```
