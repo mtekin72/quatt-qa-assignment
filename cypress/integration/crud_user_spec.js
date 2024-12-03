@@ -1,5 +1,6 @@
+const token = Cypress.env('API_TOKEN'); 
+
 describe('CRUD Operations for User API', () => {
-    const token = '8cded18945a8fd3ea5d3ea0b13b341ff9ffad692c2cda0ba2b1f47124302032c'; //
     let userId;
 
     it('Create a user', () => {
