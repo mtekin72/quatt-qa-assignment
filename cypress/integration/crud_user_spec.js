@@ -1,5 +1,5 @@
 describe('CRUD Operations for User API', () => {
-    const token = "Cypress.env('CYPRESS_API_TOKEN')";
+    const token = Cypress.env('CYPRESS_API_TOKEN');
     let userId;
   
     it('Create a user', () => {
