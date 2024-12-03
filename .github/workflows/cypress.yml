@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
       - main
+
 jobs:
   cypress-run:
     runs-on: ubuntu-22.04
@@ -16,13 +17,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Cypress run  # runs all tests and uploads results to cypress cloud
+
+      - name: Print Environment Variables (Debugging)
+        run: |
+          echo "CYPRESS_API_TOKEN: ${{ secrets.CYPRESS_API_TOKEN }}"
+          echo "CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}"
+          echo "GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Cypress run
         uses: cypress-io/github-action@v6
         with:
           record: true
         env:
-          CYPRESS_API_TOKEN: ${{ secrets.CYPRESS_API_TOKEN }} 
-          # pass the Cypress Cloud record key as an environment variable
+          CYPRESS_API_TOKEN: ${{ secrets.CYPRESS_API_TOKEN }}
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-          # pass GitHub token to detect new build vs re-run build
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
