@@ -15,7 +15,7 @@ jobs:
       image: cypress/base:20.9.0
       options: --user 1001
 
-    environment: Testing  
+    environment: Testing
 
     steps:
       - name: Checkout code
@@ -24,13 +24,16 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run Cypress tests
-        uses: cypress-io/github-action@v6
-        with:
-          record: true
+      # Debug step to check environment variables
+      - name: Debug environment
+        run: printenv | grep CYPRESS
         env:
-          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }} 
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           CYPRESS_API_TOKEN: ${{ secrets.CYPRESS_API_TOKEN }}
-- name: Debug environment
-  run: printenv | grep CYPRESS
+
+      # Debugging API token
+      - name: Test API token validity
+        run: |
+          echo "Testing API Token"
+          curl -X GET "https://api
+
