@@ -28,3 +28,5 @@ jobs:
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}  # Reference to your GitHub secret
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Automatically provided by GitHub Actions
+          CYPRESS_API_TOKEN: ${{ secrets.CYPRESS_API_TOKEN }}  # Pass the API token as an environment variable
+
