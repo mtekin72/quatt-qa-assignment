@@ -1,22 +1,8 @@
 describe('CRUD Operations for User API', () => {
+    const token = "Cypress.env('CYPRESS_API_TOKEN')";
     let userId;
-    let token;
-  
-    beforeEach(() => {
-      // Retrieve the token from Cypress.env and handle asynchronous behavior
-      Cypress.env('CYPRESS_API_TOKEN').then((apiToken) => {
-        token = apiToken;
-  
-        if (!token) {
-          throw new Error('CYPRESS_API_TOKEN is not defined. Please check your environment secrets.');
-        }
-      });
-  
-    });
-  
   
     it('Create a user', () => {
-        console.log("CYPRESS_API_TOKEN:", Cypress.env('CYPRESS_API_TOKEN'));
       const email = `john.doe.${Date.now()}@test.com`;
       cy.apiRequest('POST', '/users', {
         name: 'John Doe',

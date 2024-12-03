@@ -1,4 +1,4 @@
-name: Cypress Tests
+name: Run Cypress Tests
 
 on:
   push:
@@ -14,17 +14,15 @@ jobs:
     container:
       image: cypress/base:20.9.0
       options: --user 1001
+
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Print Environment Variables (Debugging)
-        run: |
-          echo "CYPRESS_API_TOKEN: ${{ secrets.CYPRESS_API_TOKEN }}"
-          echo "CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}"
-          echo "GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}"
+      - name: Install dependencies
+        run: npm ci
 
-      - name: Cypress run
+      - name: Run Cypress Tests
         uses: cypress-io/github-action@v6
         with:
           record: true
