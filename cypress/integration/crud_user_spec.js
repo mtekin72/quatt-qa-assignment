@@ -2,6 +2,7 @@ describe('CRUD Operations for User API', () => {
     const token = Cypress.env('CYPRESS_API_TOKEN');
     
     let userId;
+    let existingEmail;
   
     it('Create a user', () => {
       const email = `john.doe.${Date.now()}@test.com`;
@@ -17,9 +18,24 @@ describe('CRUD Operations for User API', () => {
         expect(response.body.status).to.eq('active');
         expect(response.body.email).to.eq(email);
         userId = response.body.id;
+        cy.log('ID:', JSON.stringify(response.body.id));
+        existingEmail = response.body.email; // Save the email for duplicate test
+        cy.log('Existing Email:', JSON.stringify(response.body.email));
       });
     });
-  
+    it('Attempt to create a user with the same email', () => {
+      cy.apiRequest('POST', '/users', {
+        name: 'Duplicate User',
+        gender: 'male',
+        email: existingEmail, // The email already used for the first user
+        status: 'active',
+      }, token).then(response => {
+        cy.log('Full response body:', JSON.stringify(response.body));
+        cy.log('Email used for duplicate request:', existingEmail);
+        expect(response.status).to.eq(422);
+        expect(response.body[0]).to.have.property('message').that.includes('has already been taken');
+      });
+    });
     it('Retrieve the created user', () => {
       cy.apiRequest('GET', `/users/${userId}`, null, token).then(response => {
         expect(response.status).to.eq(200);

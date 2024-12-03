@@ -10,24 +10,31 @@ on:
 
 jobs:
   cypress-run:
-    runs-on: ubuntu-22.04
-    container:
-      image: cypress/base:20.9.0
-      options: --user 1001
+    runs-on: ubuntu-latest  # or ubuntu-22.04 if preferred
+
+    strategy:
+      matrix:
+        node-version: [16]  # Adjust if you need a different Node version
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3  # Use the latest version
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci  # Ensures a clean installation of packages
 
       - name: Run Cypress Tests
-        uses: cypress-io/github-action@v6
+        uses: cypress-io/github-action@v6  # Cypress GitHub Action
         with:
           record: true
         env:
           CYPRESS_API_TOKEN: ${{ secrets.CYPRESS_API_TOKEN }}
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}  # Make sure this is also set in your GitHub secrets
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
