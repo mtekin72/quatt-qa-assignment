@@ -1,11 +1,19 @@
 describe('CRUD Operations for User API', () => {
-    const token = "c7b63023d0ce1b3a08bbd49f7715e424c40d2583e3790adc73750a054604e111";
     let userId;
-    console.log('API Token:', token);
+    let token;
   
-    if (!token) {
-      throw new Error('CYPRESS_API_TOKEN is not defined. Please check your environment secrets.');
-    }
+    beforeEach(() => {
+      // Retrieve the token from Cypress.env and handle asynchronous behavior
+      Cypress.env('CYPRESS_API_TOKEN').then((apiToken) => {
+        token = apiToken;
+  
+        if (!token) {
+          throw new Error('CYPRESS_API_TOKEN is not defined. Please check your environment secrets.');
+        }
+      });
+  
+    });
+  
   
     it('Create a user', () => {
         console.log("CYPRESS_API_TOKEN:", Cypress.env('CYPRESS_API_TOKEN'));
