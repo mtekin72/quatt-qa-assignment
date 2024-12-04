@@ -113,7 +113,7 @@ To integrate Cypress with GitHub Actions and the Cypress Dashboard:
    Modify the `.github/workflows/cypress.yml` file to include the `--record` flag for recording test results and the `CYPRESS_RECORD_KEY` as an environment variable:
    ```yaml
    - name: Run Cypress Tests
-     uses: cypress-io/github-action@v6  # Cypress GitHub Action
+     uses: cypress-io/github-action@v6 
      with:
        record: true
      env:
@@ -137,8 +137,7 @@ Cypress.Commands.add('apiRequest', (method, url, body, token) => {
             'Content-Type': 'application/json'
         },
         body,
-        failOnStatusCode: false // If you do not want status codes to cause failures, pass the option: failOnStatusCode: false
-    });
+        failOnStatusCode: false 
 });
 ```
 
