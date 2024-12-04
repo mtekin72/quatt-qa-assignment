@@ -4,7 +4,7 @@
 This project contains end-to-end tests for CRUD (Create, Read, Update, Delete) operations on the GoRest User API using Cypress. The tests ensure the API's functionality and demonstrate best practices for test structuring, including clear, maintainable code and robust test scenarios.
 
 ## Test Strategy
-Our test strategy focuses on the following:
+Test strategy focuses on the following:
 - **End-to-End Testing**: Simulating real user interactions with the API to ensure correct behavior from start to finish.
 - **Comprehensive Coverage**: Ensuring that all CRUD operations are covered, including scenarios for successful operations, validation errors, and edge cases.
 - **Validation of API Responses**: Verifying that responses include expected status codes, content, and proper error messages.
@@ -50,8 +50,33 @@ The test suite covers the following scenarios:
    ```bash
    npm install
    ```
-4. Replace `your_bearer_token_here` in `cypress/integration/crud_user_spec.js` with a valid Bearer Token.
-5. **Update `cypress.config.js`**: Ensure that the `projectId` property is set with your unique project ID from the Cypress Dashboard.
+4. Create a `.env` file in the root directory with the following content:
+   ```env
+   CYPRESS_API_TOKEN=your_actual_token
+   ```
+5. **Update `cypress.config.js`**:
+   Ensure the `projectId` property is set with your unique project ID from the Cypress Dashboard, and add the `dotenv` configuration at the top:
+   ```javascript
+   require('dotenv').config(); // Load environment variables from .env file
+
+   const { defineConfig } = require('cypress');
+
+   module.exports = defineConfig({
+     e2e: {
+       baseUrl: 'https://gorest.co.in/public/v2',
+       specPattern: 'cypress/integration/**/*.js',
+       projectId: "1cgwu4",
+       env: {
+         CYPRESS_API_TOKEN: process.env.CYPRESS_API_TOKEN // API token provided on GIT Secrets and Variables>actions>Repository secrets
+       }
+     },
+   });
+   ```
+
+6. Ensure that the `.env` file is included in your `.gitignore` to prevent it from being committed:
+   ```gitignore
+   .env
+   ```
 
 ## GitHub Actions CI/CD Integration
 To run the tests in a continuous integration/continuous deployment (CI/CD) pipeline, we use GitHub Actions. The workflow is configured to run the tests automatically on push or pull request events.
@@ -113,7 +138,7 @@ To integrate Cypress with GitHub Actions and the Cypress Dashboard:
    Modify the `.github/workflows/cypress.yml` file to include the `--record` flag for recording test results and the `CYPRESS_RECORD_KEY` as an environment variable:
    ```yaml
    - name: Run Cypress Tests
-     uses: cypress-io/github-action@v6 
+     uses: cypress-io/github-action@v6
      with:
        record: true
      env:
@@ -137,7 +162,8 @@ Cypress.Commands.add('apiRequest', (method, url, body, token) => {
             'Content-Type': 'application/json'
         },
         body,
-        failOnStatusCode: false 
+        failOnStatusCode: false
+    });
 });
 ```
 
@@ -182,6 +208,4 @@ This command helps standardize API calls across test cases, making tests more ma
 ## Notes
 - Ensure the GoRest API token is kept secure and not exposed in the source code.
 - Customize the email generation logic as needed to avoid conflicts with existing users.
-
-
 
