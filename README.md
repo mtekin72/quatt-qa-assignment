@@ -51,6 +51,7 @@ The test suite covers the following scenarios:
    npm install
    ```
 4. Replace `your_bearer_token_here` in `cypress/integration/crud_user_spec.js` with a valid Bearer Token.
+5. **Update `cypress.config.js`**: Ensure that the `projectId` property is set with your unique project ID from the Cypress Dashboard.
 
 ## GitHub Actions CI/CD Integration
 To run the tests in a continuous integration/continuous deployment (CI/CD) pipeline, we use GitHub Actions. The workflow is configured to run the tests automatically on push or pull request events.
@@ -59,7 +60,7 @@ To run the tests in a continuous integration/continuous deployment (CI/CD) pipel
 1. Ensure your GitHub repository has a `secrets` setting for storing the API token securely.
 2. Create a `.github/workflows/cypress.yml` file in your repository with the following content:
    ```yaml
-   name: Cypress Tests
+   name: Run Cypress Tests
 
    on:
      push:
@@ -71,15 +72,15 @@ To run the tests in a continuous integration/continuous deployment (CI/CD) pipel
 
    jobs:
      cypress-run:
-       runs-on: ubuntu-latest
+       runs-on: ubuntu-latest  # or ubuntu-22.04 if preferred
 
        strategy:
          matrix:
-           node-version: [16]
+           node-version: [16]  # Adjust if you need a different Node version
 
        steps:
-         - name: Checkout code
-           uses: actions/checkout@v3
+         - name: Checkout repository
+           uses: actions/checkout@v3  # Use the latest version
 
          - name: Set up Node.js
            uses: actions/setup-node@v3
@@ -87,15 +88,61 @@ To run the tests in a continuous integration/continuous deployment (CI/CD) pipel
              node-version: ${{ matrix.node-version }}
 
          - name: Install dependencies
-           run: |
-             npm install
+           run: npm ci  # Ensures a clean installation of packages
 
-         - name: Run Cypress tests
+         - name: Run Cypress Tests
+           uses: cypress-io/github-action@v6  # Cypress GitHub Action
+           with:
+             record: true
            env:
              CYPRESS_API_TOKEN: ${{ secrets.CYPRESS_API_TOKEN }}
-           run: |
-             npx cypress run
+             CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}  # Make sure this is also set in your GitHub secrets
+             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
    ```
+
+## Connecting GitHub Actions with Cypress Dashboard
+To integrate Cypress with GitHub Actions and the Cypress Dashboard:
+
+1. **CYPRESS_RECORD_KEY**: Create an account on the [Cypress Dashboard](https://dashboard.cypress.io) and obtain your record key from your project settings.
+2. **Add the Record Key to GitHub Secrets**:
+   - Go to your GitHub repository.
+   - Navigate to `Settings` > `Secrets` > `Actions` > `New repository secret`.
+   - Add `CYPRESS_RECORD_KEY` as the name and paste the record key as the value.
+
+3. **Update GitHub Actions Workflow**:
+   Modify the `.github/workflows/cypress.yml` file to include the `--record` flag for recording test results and the `CYPRESS_RECORD_KEY` as an environment variable:
+   ```yaml
+   - name: Run Cypress Tests
+     uses: cypress-io/github-action@v6  # Cypress GitHub Action
+     with:
+       record: true
+     env:
+       CYPRESS_API_TOKEN: ${{ secrets.CYPRESS_API_TOKEN }}
+       CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+   ```
+
+4. **Update `cypress.config.js`**: Ensure that the `projectId` property is set with your unique project ID from the Cypress Dashboard.
+
+## Custom Commands for Code Reusability
+To enhance code reusability and simplify test implementation, custom commands can be created. For example, the following custom command simplifies making API requests:
+
+```javascript
+Cypress.Commands.add('apiRequest', (method, url, body, token) => {
+    return cy.request({
+        method,
+        url: `https://gorest.co.in/public/v2${url}`,
+        headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body,
+        failOnStatusCode: false // If you do not want status codes to cause failures, pass the option: failOnStatusCode: false
+    });
+});
+```
+
+This command helps standardize API calls across test cases, making tests more maintainable and less repetitive.
 
 ## Run Tests
 - To run the tests in headless mode:
@@ -137,5 +184,5 @@ To run the tests in a continuous integration/continuous deployment (CI/CD) pipel
 - Ensure the GoRest API token is kept secure and not exposed in the source code.
 - Customize the email generation logic as needed to avoid conflicts with existing users.
 
-For more information or contributions, feel free to open an issue or a pull request!
+
 
