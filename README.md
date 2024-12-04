@@ -80,7 +80,7 @@ To run the tests in a continuous integration/continuous deployment (CI/CD) pipel
 
        steps:
          - name: Checkout repository
-           uses: actions/checkout@v3  # Use the latest version
+           uses: actions/checkout@v3  
 
          - name: Set up Node.js
            uses: actions/setup-node@v3
@@ -88,15 +88,15 @@ To run the tests in a continuous integration/continuous deployment (CI/CD) pipel
              node-version: ${{ matrix.node-version }}
 
          - name: Install dependencies
-           run: npm ci  # Ensures a clean installation of packages
+           run: npm ci  
 
          - name: Run Cypress Tests
-           uses: cypress-io/github-action@v6  # Cypress GitHub Action
+           uses: cypress-io/github-action@v6  
            with:
              record: true
            env:
              CYPRESS_API_TOKEN: ${{ secrets.CYPRESS_API_TOKEN }}
-             CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}  # Make sure this is also set in your GitHub secrets
+             CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
    ```
 
